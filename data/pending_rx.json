@@ -1,0 +1,28 @@
+{
+  "event_id": "6d84f302-c12f-46d5-a031-0e8f4aeeaf8c",
+  "event_time": "2026-03-20T10:15:00-07:00",
+  "patient": {
+    "patient_id": "p_123",
+    "first_name": "John",
+    "last_name": "Smith",
+    "dob": "1985-01-01"
+  },
+  "prescriber": {
+    "npi": "1234567890",
+    "display_name": "Dr. Jane Smith",
+    "dosespot_user_id": "u_456"
+  },
+  "prescription": {
+    "drug_display": "Semaglutide 1mg/dose (Ozempic)",
+    "rxcui": null,
+    "route": "subcutaneous",
+    "sig": "Inject 1 mg once weekly",
+    "days_supply": 90
+  },
+  "pharmacy": {
+    "name": "Walgreens",
+    "ncpdp_id": "123456"
+  },
+  "program": "Wheel Weight Management",
+  "status": "pending_transmission"
+}

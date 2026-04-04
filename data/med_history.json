@@ -1,0 +1,32 @@
+[
+  {
+    "drug_display": "Semaglutide 0.5mg/dose (Ozempic)",
+    "ingredient": "semaglutide",
+    "strength": "0.5 mg",
+    "route": "subcutaneous",
+    "fill_date": "2026-02-10",
+    "days_supply": 28,
+    "status": "dispensed",
+    "pharmacy": "CVS #8821, Austin TX"
+  },
+  {
+    "drug_display": "Semaglutide 1mg/dose (Ozempic)",
+    "ingredient": "semaglutide",
+    "strength": "1 mg",
+    "route": "subcutaneous",
+    "fill_date": "2026-03-01",
+    "days_supply": 30,
+    "status": "dispensed",
+    "pharmacy": "Costco Pharmacy, Round Rock TX"
+  },
+  {
+    "drug_display": "Metformin 500mg",
+    "ingredient": "metformin",
+    "strength": "500 mg",
+    "route": "oral",
+    "fill_date": "2026-01-15",
+    "days_supply": 90,
+    "status": "dispensed",
+    "pharmacy": "Unknown"
+  }
+]
