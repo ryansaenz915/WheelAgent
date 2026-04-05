@@ -54,11 +54,9 @@ def _render_med_history(case: Dict[str, Any], result: Dict[str, Any] | None) -> 
             + "; border-radius:12px; padding:10px 12px; margin-bottom:8px;'>"
             + f"<div style='font-weight:700; margin-bottom:6px;'>{row.get('drug_display', '')}</div>"
             + "<div style='display:flex; flex-wrap:wrap; gap:6px;'>"
-            + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Ingredient: {row.get('ingredient', '')}</span>"
-            + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Strength: {row.get('strength', '')}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Fill Date: {row.get('fill_date', '')}</span>"
-            + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Days Supply: {row.get('days_supply', '')}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Supply End Date: {supply_end_date or ''}</span>"
+            + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Days Supply: {row.get('days_supply', '')}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Pharmacy: {row.get('pharmacy', '')}</span>"
             + "</div></div>"
         )
