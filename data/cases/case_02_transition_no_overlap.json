@@ -1,0 +1,22 @@
+﻿{
+  "review_id": "case_02",
+  "review_type": "duplicate_transition",
+  "queue": {"patient_name": "Jane Doe", "primary_drug_or_issue": "Semaglutide 2 mg dose escalation", "severity": "info", "program": "Weight Management", "status": "open", "updated_at": "2026-04-15T09:30:00-07:00"},
+  "pending_rx": {
+    "event_id": "evt_case02",
+    "event_time": "2026-04-15T09:30:00-07:00",
+    "patient": {"patient_id": "p_200", "first_name": "Jane", "last_name": "Doe", "dob": "1987-06-10"},
+    "prescriber": {"npi": "2223334445", "display_name": "Dr. Emily Carter", "dosespot_user_id": "u_902"},
+    "prescription": {"drug_display": "Semaglutide 2mg/dose (Ozempic)", "ingredient": "semaglutide", "strength": "2 mg", "route": "subcutaneous", "sig": "Inject 2 mg once weekly", "days_supply": 84},
+    "pharmacy": {"name": "Walgreens", "ncpdp_id": "123456"},
+    "program": "Weight Management",
+    "status": "pending_transmission"
+  },
+  "med_history": [
+    {"drug_display": "Semaglutide 1mg/dose (Ozempic)", "ingredient": "semaglutide", "strength": "1 mg", "route": "subcutaneous", "fill_date": "2026-03-10", "days_supply": 28, "status": "dispensed", "pharmacy": "CVS #2011, Los Angeles CA"},
+    {"drug_display": "Metformin 500mg", "ingredient": "metformin", "strength": "500 mg", "route": "oral", "fill_date": "2026-02-01", "days_supply": 90, "status": "dispensed", "pharmacy": "CVS #2011, Los Angeles CA"}
+  ],
+  "active_med_list": [],
+  "expected": {"severity": "info", "duplicate_type": "same_drug_diff_strength", "max_overlap_days": 0, "classification": "likely_transition"},
+  "notes": {"purpose": "Tests no-overlap dose transition", "should_invoke_llm": false}
+}

@@ -101,6 +101,21 @@ def build_finding(
         classifier_outputs=[c.to_serializable() for c in classifier_outputs],
     )
 
+    recommended_actions = [
+        {
+            "action": "approve_prescription",
+            "label": "Approve Prescription",
+        },
+        {
+            "action": "adjust_start_date",
+            "label": "Start after 2026-03-30 if continuing existing supply",
+        },
+        {
+            "action": "cancel_duplicate_prescription",
+            "label": "Cancel - Duplicate Prescription",
+        },
+    ]
+
     payload = {
         "severity": severity,
         "title": _deterministic_title(event, rules),
@@ -112,24 +127,7 @@ def build_finding(
             "Medication history may be incomplete and may not reflect what the patient is actually taking.",
             "Overlap is estimated from fill date plus days supply.",
         ],
-        "recommended_actions": [
-            {
-                "action": "confirm_with_patient",
-                "label": "Confirm last injection date and remaining supply",
-            },
-            {
-                "action": "adjust_start_date",
-                "label": "Start after 2026-03-30 if continuing existing supply",
-            },
-            {
-                "action": "edit_or_cancel",
-                "label": "Edit quantity or cancel if true duplicate",
-            },
-            {
-                "action": "proceed",
-                "label": "Proceed with documented reason if clinically appropriate",
-            },
-        ],
+        "recommended_actions": recommended_actions,
         "clinician_response": {
             "required": True,
             "reason_codes": ["dose_titration", "renewal", "replacement_lost", "pharmacy_switch", "other"],

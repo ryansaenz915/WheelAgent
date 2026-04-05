@@ -3,4 +3,6 @@
 .pytest_cache/
 .venv/
 .env
+.env.*
 *.log
+.streamlit/secrets.toml

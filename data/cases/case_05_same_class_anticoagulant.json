@@ -1,0 +1,22 @@
+﻿{
+  "review_id": "case_05",
+  "review_type": "class_overlap_high_risk",
+  "queue": {"patient_name": "David Brooks", "primary_drug_or_issue": "Anticoagulant class overlap", "severity": "block", "program": "Cardiology", "status": "open", "updated_at": "2026-03-20T14:15:00-07:00"},
+  "pending_rx": {
+    "event_id": "evt_case05",
+    "event_time": "2026-03-20T14:15:00-07:00",
+    "patient": {"patient_id": "p_500", "first_name": "David", "last_name": "Brooks", "dob": "1964-02-18"},
+    "prescriber": {"npi": "5556667778", "display_name": "Dr. Hannah Lee", "dosespot_user_id": "u_905"},
+    "prescription": {"drug_display": "Rivaroxaban 20mg tablet", "ingredient": "rivaroxaban", "strength": "20 mg", "route": "oral", "sig": "Take 1 tablet by mouth daily with evening meal", "days_supply": 30},
+    "pharmacy": {"name": "Costco Pharmacy, Dallas TX", "ncpdp_id": "666444"},
+    "program": "Cardiology",
+    "status": "pending_transmission"
+  },
+  "med_history": [
+    {"drug_display": "Apixaban 5mg tablet", "ingredient": "apixaban", "strength": "5 mg", "route": "oral", "fill_date": "2026-03-05", "days_supply": 30, "status": "dispensed", "pharmacy": "CVS #5501, Dallas TX"},
+    {"drug_display": "Aspirin 81mg", "ingredient": "aspirin", "strength": "81 mg", "route": "oral", "fill_date": "2026-03-10", "days_supply": 30, "status": "dispensed", "pharmacy": "CVS #5501, Dallas TX"}
+  ],
+  "active_med_list": [],
+  "expected": {"severity": "block", "duplicate_type": "same_class", "max_overlap_days": 15, "classification": "high_risk_same_class_overlap", "same_class": true},
+  "notes": {"purpose": "High-risk anticoagulant same-class overlap", "should_invoke_llm": false}
+}

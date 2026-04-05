@@ -1,0 +1,68 @@
+﻿[
+  {
+    "review_id": "case_01",
+    "review_type": "duplicate_exact",
+    "patient_name": "John Smith",
+    "primary_drug_or_issue": "Semaglutide 1mg potential duplicate",
+    "severity": "review_required",
+    "program": "Wheel Weight Management",
+    "status": "open",
+    "updated_at": "2026-03-20T10:15:00-07:00",
+    "case_file": "data/cases/case_01_exact_duplicate.json"
+  },
+  {
+    "review_id": "case_02",
+    "review_type": "duplicate_transition",
+    "patient_name": "Jane Doe",
+    "primary_drug_or_issue": "Semaglutide 2 mg dose escalation",
+    "severity": "info",
+    "program": "Weight Management",
+    "status": "open",
+    "updated_at": "2026-04-15T09:30:00-07:00",
+    "case_file": "data/cases/case_02_transition_no_overlap.json"
+  },
+  {
+    "review_id": "case_03",
+    "review_type": "duplicate_transition",
+    "patient_name": "Michael Torres",
+    "primary_drug_or_issue": "Semaglutide dose transition with overlap",
+    "severity": "review_required",
+    "program": "Weight Management",
+    "status": "open",
+    "updated_at": "2026-03-22T10:00:00-07:00",
+    "case_file": "data/cases/case_03_transition_overlap.json"
+  },
+  {
+    "review_id": "case_04",
+    "review_type": "early_refill",
+    "patient_name": "Sarah Patel",
+    "primary_drug_or_issue": "Lisinopril renewal with low overlap",
+    "severity": "info",
+    "program": "Primary Care",
+    "status": "open",
+    "updated_at": "2026-03-28T08:45:00-07:00",
+    "case_file": "data/cases/case_04_early_refill.json"
+  },
+  {
+    "review_id": "case_05",
+    "review_type": "class_overlap_high_risk",
+    "patient_name": "David Brooks",
+    "primary_drug_or_issue": "Anticoagulant class overlap",
+    "severity": "block",
+    "program": "Cardiology",
+    "status": "open",
+    "updated_at": "2026-03-20T14:15:00-07:00",
+    "case_file": "data/cases/case_05_same_class_anticoagulant.json"
+  },
+  {
+    "review_id": "case_06",
+    "review_type": "polypharmacy_interaction",
+    "patient_name": "Olivia Chen",
+    "primary_drug_or_issue": "QT-risk polypharmacy review",
+    "severity": "review_required",
+    "program": "Urgent Care",
+    "status": "open",
+    "updated_at": "2026-03-20T11:20:00-07:00",
+    "case_file": "data/cases/case_06_polypharmacy_qt_risk.json"
+  }
+]

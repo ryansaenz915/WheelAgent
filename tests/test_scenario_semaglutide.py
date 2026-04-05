@@ -20,3 +20,4 @@ def test_full_sample_scenario_expected_output():
         and e["pharmacy"] == "Costco Pharmacy, Round Rock TX"
         for e in finding["evidence"]
     )
+    assert any(a["action"] == "approve_prescription" for a in finding["recommended_actions"])

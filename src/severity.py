@@ -20,10 +20,7 @@ def assign_severity(rules: RulesResult, classifier_outputs: List[ClassifierOutpu
     severity = "info"
     rationale: List[str] = []
 
-    if exact_overlap_count >= 2:
-        severity = "block"
-        rationale.append("multiple_overlapping_same_strength_fills")
-    elif exact_overlap_count >= 1:
+    if exact_overlap_count >= 1:
         severity = "review_required"
         rationale.append("same_drug_same_strength_overlap_ge_4")
     elif transition_with_overlap:
@@ -39,6 +36,9 @@ def assign_severity(rules: RulesResult, classifier_outputs: List[ClassifierOutpu
     elif 0 < rules.max_overlap_days <= 3:
         severity = "info"
         rationale.append("low_overlap_le_3")
+    else:
+        severity = "info"
+        rationale.append("no_active_overlap")
 
     if rules.multi_pharmacy_risk_amplifier and rules.max_overlap_days > 0 and severity == "info":
         severity = "review_required"

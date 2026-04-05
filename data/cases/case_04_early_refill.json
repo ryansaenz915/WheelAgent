@@ -1,0 +1,22 @@
+﻿{
+  "review_id": "case_04",
+  "review_type": "early_refill",
+  "queue": {"patient_name": "Sarah Patel", "primary_drug_or_issue": "Lisinopril renewal with low overlap", "severity": "info", "program": "Primary Care", "status": "open", "updated_at": "2026-03-28T08:45:00-07:00"},
+  "pending_rx": {
+    "event_id": "evt_case04",
+    "event_time": "2026-03-28T08:45:00-07:00",
+    "patient": {"patient_id": "p_400", "first_name": "Sarah", "last_name": "Patel", "dob": "1978-09-03"},
+    "prescriber": {"npi": "4445556667", "display_name": "Dr. Robert Kim", "dosespot_user_id": "u_904"},
+    "prescription": {"drug_display": "Lisinopril 10mg tablet", "ingredient": "lisinopril", "strength": "10 mg", "route": "oral", "sig": "Take 1 tablet by mouth once daily", "days_supply": 90},
+    "pharmacy": {"name": "Walgreens, San Diego CA", "ncpdp_id": "777123"},
+    "program": "Primary Care",
+    "status": "pending_transmission"
+  },
+  "med_history": [
+    {"drug_display": "Lisinopril 10mg tablet", "ingredient": "lisinopril", "strength": "10 mg", "route": "oral", "fill_date": "2026-03-01", "days_supply": 30, "status": "dispensed", "pharmacy": "Walgreens, San Diego CA"},
+    {"drug_display": "Atorvastatin 20mg", "ingredient": "atorvastatin", "strength": "20 mg", "route": "oral", "fill_date": "2026-03-15", "days_supply": 30, "status": "dispensed", "pharmacy": "Walgreens, San Diego CA"}
+  ],
+  "active_med_list": [],
+  "expected": {"severity": "info", "duplicate_type": "same_drug_same_strength", "max_overlap_days": 3, "classification": "renewal_or_early_refill"},
+  "notes": {"purpose": "Low overlap renewal suppression", "should_invoke_llm": false}
+}

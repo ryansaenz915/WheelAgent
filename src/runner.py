@@ -8,12 +8,14 @@ from .finding import build_finding
 from .llm import ClaudeAdapter
 from .logging_utils import AuditLogger
 from .models import ClassifierOutput, MedicationHistoryEntry, PendingPrescriptionEvent
+from .review_cases import load_case_by_id
 from .rules import apply_rules
 from .severity import assign_severity
+from .transmission_service import TransmissionService
 
 BOUNDARY_STATEMENT = (
-    "This is a medication reconciliation assist only. "
-    "Clinician judgment remains the final decision-maker."
+    "This workflow provides medication-safety reconciliation support only. "
+    "The clinician remains the final decision-maker."
 )
 
 METRICS_PLACEHOLDERS = {
@@ -56,14 +58,31 @@ def run_duplicate_check(pending_rx: Dict[str, Any], med_history: List[Dict[str, 
     logger.log("rule_triggers", {"triggered_rules": rules_result.triggered_rules})
 
     llm_adapter = ClaudeAdapter()
+    llm_mode = llm_adapter.mode_state()
     classifier_outputs: List[ClassifierOutput] = []
+    classifier_route_log: List[Dict[str, Any]] = []
+
     for candidate in rules_result.transition_or_duplicate:
+        route = llm_adapter.explain_route_for_candidate(candidate)
+        classifier_route_log.append(
+            {
+                "drug_display": candidate.drug_display,
+                "overlap_days": candidate.overlap_days,
+                "same_strength": candidate.same_strength,
+                "route_decision": route["decision"],
+                "route_reason": route["reason"],
+                "llm_execution_mode": llm_mode["execution_mode"],
+            }
+        )
         classifier_outputs.append(llm_adapter.classify_ambiguous_candidate(event, candidate))
+
     logger.log(
         "llm_invoked_or_skipped",
         {
             "llm_invoked": any(output.llm_invoked for output in classifier_outputs),
             "transition_candidates": len(rules_result.transition_or_duplicate),
+            "route_log": classifier_route_log,
+            "llm_mode": llm_mode,
         },
     )
 
@@ -90,8 +109,11 @@ def run_duplicate_check(pending_rx: Dict[str, Any], med_history: List[Dict[str, 
         "decision_trace": {
             **rules_result.trace(),
             "classifier_outputs": [x.to_serializable() for x in classifier_outputs],
+            "classifier_route_log": classifier_route_log,
             "severity_rationale": severity.rationale,
             "claude_invoked": any(x.llm_invoked for x in classifier_outputs),
+            "llm_policy": "ambiguous_same_ingredient_diff_strength_only",
+            "llm_mode": llm_mode,
         },
         "boundary": BOUNDARY_STATEMENT,
         "metrics_placeholders": METRICS_PLACEHOLDERS,
@@ -103,6 +125,16 @@ def run_sample(data_dir: Path) -> Dict[str, Any]:
     pending = json.loads((data_dir / "pending_rx.json").read_text(encoding="utf-8"))
     history = json.loads((data_dir / "med_history.json").read_text(encoding="utf-8"))
     return run_duplicate_check(pending, history)
+
+
+def run_review_case(
+    review_id: str,
+    clinician_acknowledged: bool = False,
+    reason_code: str | None = None,
+) -> Dict[str, Any]:
+    case = load_case_by_id(review_id)
+    service = TransmissionService()
+    return service.process_case(case, clinician_acknowledged=clinician_acknowledged, reason_code=reason_code)
 
 
 def main() -> None:
