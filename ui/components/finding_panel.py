@@ -67,6 +67,7 @@ def _save_action_outcome(case: Dict[str, Any], result: Dict[str, Any], action: s
         "qa_sampled_info_case": False,
     }
     save_review_outcome(outcome)
+    cached_metrics.clear()
     completed = set(st.session_state.get("completed_case_ids", []))
     completed.add(case["review_id"])
     st.session_state.completed_case_ids = sorted(completed)
@@ -98,7 +99,6 @@ def _advance_to_next_case(current_review_id: str) -> None:
     next_case = _next_review_required_case(current_review_id)
     if next_case:
         set_case(next_case)
-    cached_metrics.clear()
 
 
 def _render_info_action(case: Dict[str, Any], result: Dict[str, Any]) -> None:

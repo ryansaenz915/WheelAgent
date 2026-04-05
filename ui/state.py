@@ -69,7 +69,7 @@ def set_case(review_id: str, initialize_only: bool = False) -> None:
     st.session_state.history_text = json.dumps(case["med_history"], indent=2)
     st.session_state.active_text = json.dumps(case.get("active_med_list", []), indent=2)
     st.session_state.result = None
-    st.session_state.review_opened_at = None
+    st.session_state.review_opened_at = datetime.now(timezone.utc).isoformat()
     st.session_state.review_saved = False
 
 
@@ -93,6 +93,4 @@ def run_check(ack: bool = False, reason_code: str | None = None) -> Dict[str, An
     service = TransmissionService()
     result = service.process_case(build_case_from_inputs(), clinician_acknowledged=ack, reason_code=reason_code)
     st.session_state.result = result
-    if not st.session_state.review_opened_at:
-        st.session_state.review_opened_at = datetime.now(timezone.utc).isoformat()
     return result
