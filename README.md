@@ -8,6 +8,7 @@ Key boundaries:
 - Clinician remains final decision-maker.
 - LLM support is optional and narrowly scoped to ambiguous same-ingredient, different-strength overlap cases.
 - Evidence-first findings with clear limitations and auditable trace.
+- UI severity wording uses `No Review Required` for internal `info` cases.
 
 ## Product Workflow
 1. Review Queue triage
