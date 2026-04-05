@@ -3,6 +3,7 @@ from __future__ import annotations
 PROMPT_VERSIONS = {
     "classification": "prompt_a_duplicate_transition_classifier.v1",
     "finding_wording": "prompt_b_structured_finding_generator.v1",
+    "combined_classification_finding": "prompt_ab_combined_classifier_finding.v1",
 }
 
 CLASSIFICATION_SYSTEM_PROMPT = """You are a medication safety assistant used in an e-prescribing workflow.
@@ -95,4 +96,80 @@ Return this JSON:
    "required": true,
    "reason_codes": ["dose_titration", "renewal", "replacement_lost", "pharmacy_switch", "other"]
  }}
+}}"""
+
+
+COMBINED_CLASSIFICATION_FINDING_SYSTEM_PROMPT = """You are a medication safety assistant used in a pre-transmission e-prescribing workflow.
+You must return both:
+1) a strict classifier output for the ambiguous candidate
+2) a clinician-facing structured finding
+
+Use only provided evidence.
+Do not infer unknown facts.
+Return valid JSON only."""
+
+
+COMBINED_CLASSIFICATION_FINDING_USER_PROMPT_TEMPLATE = """Pending prescription:
+{PENDING_RX_JSON}
+
+Candidate medication history entry:
+{HISTORY_ENTRY_JSON}
+
+Computed facts:
+- overlap_days: {OVERLAP_DAYS}
+- same_ingredient: {TRUE_FALSE_SAME_INGREDIENT}
+- same_strength: {TRUE_FALSE_SAME_STRENGTH}
+- same_route: {TRUE_FALSE_SAME_ROUTE}
+- different_pharmacy: {TRUE_FALSE_DIFF_PHARMACY}
+
+Computed summary:
+{OVERLAP_SUMMARY_JSON}
+
+Guidance:
+- If same_ingredient is false or same_route is false -> not_relevant
+- If overlap_days <= 0 -> not_relevant
+- If same_strength is true and overlap_days >= 4 -> true_duplicate
+- If strength differs and pattern suggests titration -> likely_transition
+- If evidence is mixed or incomplete -> uncertain
+
+Return this JSON:
+{{
+  "classifier": {{
+    "classification": "true_duplicate | likely_transition | not_relevant | uncertain",
+    "confidence": "high | medium | low",
+    "rationale": ["reason 1", "reason 2"],
+    "recommended_severity": "info | review_required | block"
+  }},
+  "finding": {{
+    "severity": "info | review_required | block",
+    "title": "string",
+    "summary": "string",
+    "duplicate_type": "same_drug_same_strength | same_drug_diff_strength | same_class | other",
+    "computed": {{
+      "proposed_start_date": "YYYY-MM-DD",
+      "proposed_end_date": "YYYY-MM-DD",
+      "max_overlap_days": number
+    }},
+    "evidence": [
+      {{
+        "drug": "string",
+        "fill_date": "YYYY-MM-DD",
+        "days_supply": number,
+        "supply_end_date": "YYYY-MM-DD",
+        "status": "string",
+        "pharmacy": "string"
+      }}
+    ],
+    "limitations": ["string"],
+    "recommended_actions": [
+      {{
+        "action": "approve_prescription | adjust_start_date | cancel_duplicate_prescription | proceed_next_case",
+        "label": "string"
+      }}
+    ],
+    "clinician_response": {{
+      "required": true,
+      "reason_codes": ["dose_titration", "renewal", "replacement_lost", "pharmacy_switch", "other"]
+    }}
+  }}
 }}"""

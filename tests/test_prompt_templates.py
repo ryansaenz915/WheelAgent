@@ -1,4 +1,8 @@
-from src.prompts import CLASSIFICATION_USER_PROMPT_TEMPLATE, FINDING_WORDING_USER_PROMPT_TEMPLATE
+from src.prompts import (
+    CLASSIFICATION_USER_PROMPT_TEMPLATE,
+    COMBINED_CLASSIFICATION_FINDING_USER_PROMPT_TEMPLATE,
+    FINDING_WORDING_USER_PROMPT_TEMPLATE,
+)
 
 
 def test_classification_prompt_template_formats() -> None:
@@ -22,3 +26,18 @@ def test_finding_prompt_template_formats() -> None:
         CLASSIFIER_OUTPUTS_JSON_ARRAY="[]",
     )
     assert "recommended_actions" in out
+
+
+def test_combined_prompt_template_formats() -> None:
+    out = COMBINED_CLASSIFICATION_FINDING_USER_PROMPT_TEMPLATE.format(
+        PENDING_RX_JSON="{}",
+        HISTORY_ENTRY_JSON="{}",
+        OVERLAP_DAYS=1,
+        TRUE_FALSE_SAME_INGREDIENT="true",
+        TRUE_FALSE_SAME_STRENGTH="false",
+        TRUE_FALSE_SAME_ROUTE="true",
+        TRUE_FALSE_DIFF_PHARMACY="false",
+        OVERLAP_SUMMARY_JSON="{}",
+    )
+    assert "classifier" in out
+    assert "finding" in out

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import timedelta
 from typing import Any, Dict, List
 
 from openai import OpenAIError
@@ -9,10 +10,8 @@ from services.openai_client import get_openai_client, get_openai_model
 from .llm_schema import validate_classifier_output, validate_finding_llm_payload
 from .models import ClassifierOutput, DuplicateCandidate, PendingPrescriptionEvent
 from .prompts import (
-    CLASSIFICATION_SYSTEM_PROMPT,
-    CLASSIFICATION_USER_PROMPT_TEMPLATE,
-    FINDING_WORDING_SYSTEM_PROMPT,
-    FINDING_WORDING_USER_PROMPT_TEMPLATE,
+    COMBINED_CLASSIFICATION_FINDING_SYSTEM_PROMPT,
+    COMBINED_CLASSIFICATION_FINDING_USER_PROMPT_TEMPLATE,
     PROMPT_VERSIONS,
 )
 
@@ -25,6 +24,7 @@ class ClaudeAdapter:
         self.use_llm = os.getenv("USE_LLM", "false").lower() == "true"
         self.client = get_openai_client()
         self.has_api_key = self.client is not None
+        self._cached_live_finding_payload: Dict[str, Any] | None = None
 
     def should_call_live(self) -> bool:
         return self.use_llm and self.has_api_key
@@ -147,6 +147,7 @@ class ClaudeAdapter:
         event: PendingPrescriptionEvent,
         candidate: DuplicateCandidate,
     ) -> ClassifierOutput:
+        self._cached_live_finding_payload = None
         route = self.explain_route_for_candidate(candidate)
         if route["decision"] == "skip":
             return ClassifierOutput(
@@ -168,7 +169,10 @@ class ClaudeAdapter:
             out.rationale.append("LLM mode enabled but API key unavailable; deterministic fallback path used.")
             return out
 
-        prompt = CLASSIFICATION_USER_PROMPT_TEMPLATE.format(
+        pending_start_date = event.event_time.date().isoformat()
+        pending_end_date = (event.event_time.date() + timedelta(days=max(event.prescription.days_supply - 1, 0))).isoformat()
+
+        prompt = COMBINED_CLASSIFICATION_FINDING_USER_PROMPT_TEMPLATE.format(
             PENDING_RX_JSON=json.dumps(event.to_serializable(), indent=2),
             HISTORY_ENTRY_JSON=json.dumps(
                 {
@@ -188,18 +192,34 @@ class ClaudeAdapter:
             TRUE_FALSE_SAME_ROUTE=str(candidate.same_route).lower(),
             TRUE_FALSE_SAME_STRENGTH=str(candidate.same_strength).lower(),
             TRUE_FALSE_DIFF_PHARMACY=str(candidate.different_pharmacy).lower(),
+            OVERLAP_SUMMARY_JSON=json.dumps(
+                {
+                    "pending_start_date": pending_start_date,
+                    "pending_end_date": pending_end_date,
+                    "max_overlap_days": candidate.overlap_days,
+                    "multi_pharmacy_risk_amplifier": candidate.different_pharmacy,
+                },
+                indent=2,
+            ),
         )
 
         try:
-            parsed = self._call_claude_json(CLASSIFICATION_SYSTEM_PROMPT, prompt)
-            ok, _ = validate_classifier_output(parsed)
+            parsed = self._call_claude_json(COMBINED_CLASSIFICATION_FINDING_SYSTEM_PROMPT, prompt)
+            classifier_payload = parsed.get("classifier", {})
+            finding_payload = parsed.get("finding", {})
+
+            ok, _ = validate_classifier_output(classifier_payload)
             if not ok:
                 raise ValueError("Invalid classifier JSON schema")
+            finding_ok, _ = validate_finding_llm_payload(finding_payload)
+            if finding_ok:
+                self._cached_live_finding_payload = dict(finding_payload)
+
             return ClassifierOutput(
-                classification=str(parsed.get("classification", "uncertain")),
-                rationale=list(parsed.get("rationale", ["No rationale returned."])),
-                confidence=str(parsed.get("confidence", "low")),
-                recommended_severity=str(parsed.get("recommended_severity", "review_required")),
+                classification=str(classifier_payload.get("classification", "uncertain")),
+                rationale=list(classifier_payload.get("rationale", ["No rationale returned."])),
+                confidence=str(classifier_payload.get("confidence", "low")),
+                recommended_severity=str(classifier_payload.get("recommended_severity", "review_required")),
                 candidate_drug=candidate.drug_display,
                 llm_invoked=True,
             )
@@ -215,20 +235,14 @@ class ClaudeAdapter:
         overlap_summary: Dict[str, Any],
         classifier_outputs: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
+        _ = (pending_json, relevant_history, overlap_summary, classifier_outputs)
         if not self.should_call_live():
             return {}
-
-        prompt = FINDING_WORDING_USER_PROMPT_TEMPLATE.format(
-            PENDING_RX_JSON=json.dumps(pending_json, indent=2),
-            RELEVANT_HISTORY_JSON_ARRAY=json.dumps(relevant_history, indent=2),
-            OVERLAP_SUMMARY_JSON=json.dumps(overlap_summary, indent=2),
-            CLASSIFIER_OUTPUTS_JSON_ARRAY=json.dumps(classifier_outputs, indent=2),
-        )
-        try:
-            payload = self._call_claude_json(FINDING_WORDING_SYSTEM_PROMPT, prompt)
-            ok, _ = validate_finding_llm_payload(payload)
-            if not ok:
-                return {}
-            return payload
-        except (OpenAIError, ValueError, KeyError, json.JSONDecodeError):
+        if not self._cached_live_finding_payload:
             return {}
+        payload = dict(self._cached_live_finding_payload)
+        self._cached_live_finding_payload = None
+        ok, _ = validate_finding_llm_payload(payload)
+        if not ok:
+            return {}
+        return payload

@@ -94,7 +94,24 @@ p, div, span, label, li, td, th, small {{
 [data-testid="stTextArea"] textarea {{
   background: #FFFFFF !important;
   color: #000000 !important;
-  border: 1px solid #000000 !important;
+  border: 1px solid #CFCFCF !important;
+}}
+[data-testid="stTextArea"] [data-baseweb="textarea"] {{
+  border: 1px solid #CFCFCF !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  background: #FFFFFF !important;
+}}
+[data-testid="stTextArea"] [data-baseweb="textarea"] > div {{
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}}
+[data-testid="stTextArea"] [data-baseweb="textarea"] textarea {{
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }}
 [data-baseweb="select"] > div {{
   background: #FFFFFF !important;
