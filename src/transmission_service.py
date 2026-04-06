@@ -115,6 +115,16 @@ class TransmissionService:
             finding["duplicate_type"] = "other"
             finding["title"] = "QT-risk polypharmacy interaction review"
             finding["summary"] = "Potential QT prolongation interaction risk from combined active medications."
+            finding["recommended_actions"] = [
+                {
+                    "action": "approve_prescription",
+                    "label": "Approve Prescription",
+                },
+                {
+                    "action": "cancel_polypharmacy_issue",
+                    "label": "Cancel - Polypharmacy Issue",
+                },
+            ]
             finding["interaction"] = {
                 "risk_group": "QT_PROLONGATION_RISK",
                 "implicated_drugs": implicated,

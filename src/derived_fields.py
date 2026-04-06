@@ -9,6 +9,7 @@ BEHAVIOR_CHANGE_ACTIONS = {
     "edit",
     "defer",
     "adjust_start_date",
+    "cancel_polypharmacy_issue",
     "choose_alternative",
     "escalate",
 }

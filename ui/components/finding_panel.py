@@ -14,6 +14,7 @@ def _behavior_change(action: str) -> bool:
     return action in {
         "cancel",
         "cancel_duplicate_prescription",
+        "cancel_polypharmacy_issue",
         "edit",
         "defer",
         "adjust_start_date",
@@ -144,7 +145,12 @@ def render_finding_panel(case: Dict[str, Any], result: Dict[str, Any]) -> None:
             if action_cols[idx % 2].button(label, key=f"rec_action_{case['review_id']}_{idx}", use_container_width=True):
                 notes = st.session_state.get(notes_key, "")
                 _save_action_outcome(case, result, action_key, notes=notes)
-                if action_key in {"approve_prescription", "cancel_duplicate_prescription", "adjust_start_date"}:
+                if action_key in {
+                    "approve_prescription",
+                    "cancel_duplicate_prescription",
+                    "cancel_polypharmacy_issue",
+                    "adjust_start_date",
+                }:
                     _advance_to_next_case(case["review_id"])
                     st.rerun()
                 st.success(f"Action recorded: {title_case_label(action_key)}")
