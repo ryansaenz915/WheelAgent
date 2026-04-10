@@ -7,6 +7,7 @@ from typing import Any, Dict, List
 from openai import OpenAIError
 
 from services.openai_client import get_openai_client, get_openai_model
+from .drug_classes import classify_drug_class
 from .llm_schema import validate_classifier_output, validate_finding_llm_payload
 from .models import ClassifierOutput, DuplicateCandidate, PendingPrescriptionEvent
 from .prompts import (
@@ -25,6 +26,13 @@ class ClaudeAdapter:
         self.client = get_openai_client()
         self.has_api_key = self.client is not None
         self._cached_live_finding_payload: Dict[str, Any] | None = None
+
+    @staticmethod
+    def _normalize_severity(value: str) -> str:
+        text = str(value or "").strip().lower()
+        if text == "review_required":
+            return "review_required"
+        return "info"
 
     def should_call_live(self) -> bool:
         return self.use_llm and self.has_api_key
@@ -102,7 +110,7 @@ class ClaudeAdapter:
                 classification="not_relevant",
                 rationale=["same_ingredient or same_route is false."],
                 confidence="high",
-                recommended_severity="info",
+                recommended_severity="no_review_required",
                 candidate_drug=candidate.drug_display,
                 llm_invoked=False,
             )
@@ -111,7 +119,7 @@ class ClaudeAdapter:
                 classification="not_relevant",
                 rationale=["overlap_days <= 0."],
                 confidence="high",
-                recommended_severity="info",
+                recommended_severity="no_review_required",
                 candidate_drug=candidate.drug_display,
                 llm_invoked=False,
             )
@@ -129,7 +137,7 @@ class ClaudeAdapter:
                 classification="likely_transition",
                 rationale=["different strength with low overlap suggests titration."],
                 confidence="medium",
-                recommended_severity="info",
+                recommended_severity="no_review_required",
                 candidate_drug=candidate.drug_display,
                 llm_invoked=False,
             )
@@ -154,7 +162,7 @@ class ClaudeAdapter:
                 classification="not_relevant",
                 rationale=[f"LLM skipped: {route['reason']}"],
                 confidence="high",
-                recommended_severity="info",
+                recommended_severity="no_review_required",
                 candidate_drug=candidate.drug_display,
                 llm_invoked=False,
             )
@@ -184,6 +192,7 @@ class ClaudeAdapter:
                     "days_supply": candidate.days_supply,
                     "status": candidate.status,
                     "pharmacy": candidate.pharmacy,
+                    "drug_class": classify_drug_class(candidate.drug_display, candidate.ingredient),
                 },
                 indent=2,
             ),
@@ -192,6 +201,8 @@ class ClaudeAdapter:
             TRUE_FALSE_SAME_ROUTE=str(candidate.same_route).lower(),
             TRUE_FALSE_SAME_STRENGTH=str(candidate.same_strength).lower(),
             TRUE_FALSE_DIFF_PHARMACY=str(candidate.different_pharmacy).lower(),
+            PENDING_DRUG_CLASS=classify_drug_class(event.prescription.drug_display),
+            HISTORY_DRUG_CLASS=classify_drug_class(candidate.drug_display, candidate.ingredient),
             OVERLAP_SUMMARY_JSON=json.dumps(
                 {
                     "pending_start_date": pending_start_date,
@@ -213,13 +224,16 @@ class ClaudeAdapter:
                 raise ValueError("Invalid classifier JSON schema")
             finding_ok, _ = validate_finding_llm_payload(finding_payload)
             if finding_ok:
+                finding_payload["severity"] = self._normalize_severity(str(finding_payload.get("severity", "review_required")))
+                if "drug_class" not in finding_payload:
+                    finding_payload["drug_class"] = classify_drug_class(candidate.drug_display, candidate.ingredient)
                 self._cached_live_finding_payload = dict(finding_payload)
 
             return ClassifierOutput(
                 classification=str(classifier_payload.get("classification", "uncertain")),
                 rationale=list(classifier_payload.get("rationale", ["No rationale returned."])),
                 confidence=str(classifier_payload.get("confidence", "low")),
-                recommended_severity=str(classifier_payload.get("recommended_severity", "review_required")),
+                recommended_severity=self._normalize_severity(str(classifier_payload.get("recommended_severity", "review_required"))),
                 candidate_drug=candidate.drug_display,
                 llm_invoked=True,
             )

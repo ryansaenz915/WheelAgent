@@ -5,7 +5,7 @@ from typing import Any, Dict, Tuple
 
 CLASSIFICATIONS = {"true_duplicate", "likely_transition", "not_relevant", "uncertain"}
 CONFIDENCE = {"high", "medium", "low"}
-RECOMMENDED_SEVERITY = {"info", "review_required", "block"}
+RECOMMENDED_SEVERITY = {"no_review_required", "review_required", "info", "block"}
 
 
 def validate_classifier_output(payload: Dict[str, Any]) -> Tuple[bool, str]:

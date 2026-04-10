@@ -5,6 +5,7 @@ from typing import Any, Dict
 
 import streamlit as st
 
+from src.drug_classes import classify_drug_class, drug_class_label
 from ui.components.finding_panel import render_finding_panel
 from ui.components.review_form import render_review_form
 from ui.formatting import title_case_label
@@ -14,6 +15,7 @@ from ui.theme import chip
 
 def _render_patient_context(case: Dict[str, Any], result: Dict[str, Any] | None) -> None:
     p = case["pending_rx"]
+    pending_drug_class = drug_class_label(classify_drug_class(p["prescription"]["drug_display"], p["prescription"].get("ingredient")))
     st.markdown("### Patient and Pending Rx")
     st.markdown(
         "<div class='card'>"
@@ -23,6 +25,7 @@ def _render_patient_context(case: Dict[str, Any], result: Dict[str, Any] | None)
         + f"<div><strong>{p['patient']['first_name']} {p['patient']['last_name']}</strong></div>"
         + f"<div class='muted'>DOB: {p['patient']['dob']} | Patient ID: {p['patient']['patient_id']}</div>"
         + f"<div class='muted'>Drug: {p['prescription']['drug_display']}</div>"
+        + f"<div class='muted'>Drug Class: {pending_drug_class}</div>"
         + f"<div class='muted'>Days supply: {p['prescription']['days_supply']} | Route: {p['prescription']['route']}</div>"
         + f"<div class='muted'>Prescriber NPI: {p['prescriber']['npi']}</div>"
         + f"<div class='muted'>Pharmacy: {p['pharmacy']['name']} | NCPDP ID: {p['pharmacy'].get('ncpdp_id', 'unknown')}</div>"
@@ -47,6 +50,7 @@ def _render_med_history(case: Dict[str, Any], result: Dict[str, Any] | None) -> 
         except (TypeError, ValueError):
             supply_end_date = fill_date
 
+        med_drug_class = drug_class_label(classify_drug_class(row.get("drug_display", ""), row.get("ingredient")))
         accent_border = "#24543D" if row.get("drug_display") in evidence_drugs else "#D9D9D9"
         card_rows.append(
             "<div style='background:#FFFFFF; color:#000000; border:1px solid "
@@ -57,6 +61,7 @@ def _render_med_history(case: Dict[str, Any], result: Dict[str, Any] | None) -> 
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Fill Date: {row.get('fill_date', '')}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Supply End Date: {supply_end_date or ''}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Days Supply: {row.get('days_supply', '')}</span>"
+            + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Drug Class: {med_drug_class}</span>"
             + f"<span style='border:1px solid #CFCFCF; border-radius:999px; padding:2px 8px;'>Pharmacy: {row.get('pharmacy', '')}</span>"
             + "</div></div>"
         )

@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 
 import streamlit as st
 
+from src.drug_classes import drug_class_label
 from src.review_outcomes import save_review_outcome, utc_now_iso
 from ui.formatting import title_case_label
 from ui.state import cached_metrics, cached_queue, set_case
@@ -120,6 +121,7 @@ def render_finding_panel(case: Dict[str, Any], result: Dict[str, Any]) -> None:
         + chip(f"Severity: {title_case_label(severity)}", accent=True)
         + chip("Review Type: Duplicate Detected")
         + chip(f"Duplicate Type: {title_case_label(finding.get('duplicate_type'))}")
+        + chip(f"Drug Class: {drug_class_label(str(finding.get('drug_class', 'UNKNOWN')))}")
         + f"<div><strong>{finding.get('title')}</strong></div>"
         + f"<div class='muted' style='margin-top:6px'>{finding.get('summary')}</div>"
         + f"<div style='margin-top:8px'>Proposed Start: <strong>{computed.get('proposed_start_date')}</strong></div>"

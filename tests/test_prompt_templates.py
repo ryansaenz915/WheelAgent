@@ -14,6 +14,8 @@ def test_classification_prompt_template_formats() -> None:
         TRUE_FALSE_SAME_STRENGTH="false",
         TRUE_FALSE_SAME_ROUTE="true",
         TRUE_FALSE_DIFF_PHARMACY="false",
+        PENDING_DRUG_CLASS="GLP1_AGONIST",
+        HISTORY_DRUG_CLASS="GLP1_AGONIST",
     )
     assert "classification" in out
 

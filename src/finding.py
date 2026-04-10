@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 from typing import Dict, List
 
+from .drug_classes import classify_drug_class
 from .llm import ClaudeAdapter
 from .models import ClassifierOutput, DuplicateCandidate, DuplicateRxFinding, PendingPrescriptionEvent
 from .normalize import extract_ingredient_from_display
@@ -23,6 +24,7 @@ def _build_evidence(rules: RulesResult) -> List[Dict[str, object]]:
     return [
         {
             "drug": x.drug_display,
+            "drug_class": classify_drug_class(x.drug_display, x.ingredient),
             "fill_date": x.fill_date.isoformat(),
             "days_supply": x.days_supply,
             "supply_end_date": x.supply_end_date.isoformat(),
@@ -120,6 +122,7 @@ def build_finding(
         "severity": severity,
         "title": _deterministic_title(event, rules),
         "summary": _deterministic_summary(rules),
+        "drug_class": classify_drug_class(event.prescription.drug_display),
         "duplicate_type": duplicate_type,
         "computed": computed,
         "evidence": evidence,
@@ -136,12 +139,14 @@ def build_finding(
     if llm_finding:
         payload["title"] = str(llm_finding.get("title", payload["title"]))
         payload["summary"] = str(llm_finding.get("summary", payload["summary"]))
+        payload["drug_class"] = str(llm_finding.get("drug_class", payload["drug_class"]))
 
     return DuplicateRxFinding(
         finding_id=str(uuid.uuid4()),
         severity=str(payload["severity"]),
         title=str(payload["title"]),
         summary=str(payload["summary"]),
+        drug_class=str(payload.get("drug_class", "UNKNOWN")),
         duplicate_type=str(payload["duplicate_type"]),
         computed=dict(payload["computed"]),
         evidence=list(payload["evidence"]),

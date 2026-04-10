@@ -9,6 +9,8 @@ Key boundaries:
 - LLM support is optional and narrowly scoped to ambiguous same-ingredient, different-strength overlap cases.
 - Evidence-first findings with clear limitations and auditable trace.
 - UI severity wording uses `No Review Required` for internal `info` cases.
+- Prompt-level LLM severity outputs are constrained to `review_required` and `no_review_required`.
+- Drug class is now included in prompt context and surfaced in the UI.
 
 ## Product Workflow
 1. Review Queue triage

@@ -192,6 +192,7 @@ class DuplicateRxFinding:
     severity: str
     title: str
     summary: str
+    drug_class: str
     duplicate_type: str
     computed: Dict[str, Any]
     evidence: List[Dict[str, Any]]

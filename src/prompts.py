@@ -29,6 +29,8 @@ Computed facts:
 - same_strength: {TRUE_FALSE_SAME_STRENGTH}
 - same_route: {TRUE_FALSE_SAME_ROUTE}
 - different_pharmacy: {TRUE_FALSE_DIFF_PHARMACY}
+- pending_drug_class: {PENDING_DRUG_CLASS}
+- history_drug_class: {HISTORY_DRUG_CLASS}
 
 Guidance:
 - If same_ingredient is false or same_route is false -> not_relevant
@@ -42,7 +44,8 @@ Return this JSON:
  "classification": "true_duplicate | likely_transition | not_relevant | uncertain",
  "confidence": "high | medium | low",
  "rationale": ["reason 1", "reason 2"],
- "recommended_severity": "info | review_required | block"
+ "recommended_severity": "review_required | no_review_required",
+ "drug_class": "string"
 }}"""
 
 
@@ -66,9 +69,10 @@ Classifier outputs:
 
 Return this JSON:
 {{
- "severity": "info | review_required | block",
+ "severity": "review_required | no_review_required",
  "title": "string",
  "summary": "string",
+ "drug_class": "string",
  "duplicate_type": "same_drug_same_strength | same_drug_diff_strength | same_class | other",
  "computed": {{
    "proposed_start_date": "YYYY-MM-DD",
@@ -138,12 +142,14 @@ Return this JSON:
     "classification": "true_duplicate | likely_transition | not_relevant | uncertain",
     "confidence": "high | medium | low",
     "rationale": ["reason 1", "reason 2"],
-    "recommended_severity": "info | review_required | block"
+    "recommended_severity": "review_required | no_review_required",
+    "drug_class": "string"
   }},
   "finding": {{
-    "severity": "info | review_required | block",
+    "severity": "review_required | no_review_required",
     "title": "string",
     "summary": "string",
+    "drug_class": "string",
     "duplicate_type": "same_drug_same_strength | same_drug_diff_strength | same_class | other",
     "computed": {{
       "proposed_start_date": "YYYY-MM-DD",
@@ -157,7 +163,8 @@ Return this JSON:
         "days_supply": number,
         "supply_end_date": "YYYY-MM-DD",
         "status": "string",
-        "pharmacy": "string"
+        "pharmacy": "string",
+        "drug_class": "string"
       }}
     ],
     "limitations": ["string"],
