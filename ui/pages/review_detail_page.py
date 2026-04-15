@@ -27,6 +27,7 @@ def _render_patient_context(case: Dict[str, Any], result: Dict[str, Any] | None)
         + f"<div class='muted'>Drug: {p['prescription']['drug_display']}</div>"
         + f"<div class='muted'>Drug Class: {pending_drug_class}</div>"
         + f"<div class='muted'>Days supply: {p['prescription']['days_supply']} | Route: {p['prescription']['route']}</div>"
+        + f"<div class='muted'>Prescriber Name: {p['prescriber'].get('display_name', 'Unknown')}</div>"
         + f"<div class='muted'>Prescriber NPI: {p['prescriber']['npi']}</div>"
         + f"<div class='muted'>Pharmacy: {p['pharmacy']['name']} | NCPDP ID: {p['pharmacy'].get('ncpdp_id', 'unknown')}</div>"
         + "</div>",

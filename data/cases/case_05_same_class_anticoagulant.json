@@ -1,4 +1,4 @@
-﻿{
+{
   "review_id": "case_05",
   "review_type": "class_overlap_high_risk",
   "queue": {"patient_name": "David Brooks", "primary_drug_or_issue": "Anticoagulant class overlap", "severity": "block", "program": "Cardiology", "status": "open", "updated_at": "2026-03-20T14:15:00-07:00"},
@@ -6,7 +6,7 @@
     "event_id": "evt_case05",
     "event_time": "2026-03-20T14:15:00-07:00",
     "patient": {"patient_id": "p_500", "first_name": "David", "last_name": "Brooks", "dob": "1964-02-18"},
-    "prescriber": {"npi": "5556667778", "display_name": "Dr. Hannah Lee", "dosespot_user_id": "u_905"},
+    "prescriber": {"npi": "5556667778", "display_name": "Dr. Jane Smith", "dosespot_user_id": "u_905"},
     "prescription": {"drug_display": "Rivaroxaban 20mg tablet", "ingredient": "rivaroxaban", "strength": "20 mg", "route": "oral", "sig": "Take 1 tablet by mouth daily with evening meal", "days_supply": 30},
     "pharmacy": {"name": "Costco Pharmacy, Dallas TX", "ncpdp_id": "666444"},
     "program": "Cardiology",

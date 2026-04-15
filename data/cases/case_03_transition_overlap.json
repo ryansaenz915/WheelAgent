@@ -1,4 +1,4 @@
-﻿{
+{
   "review_id": "case_03",
   "review_type": "duplicate_transition",
   "queue": {"patient_name": "Michael Torres", "primary_drug_or_issue": "Semaglutide dose transition with overlap", "severity": "review_required", "program": "Weight Management", "status": "open", "updated_at": "2026-03-22T10:00:00-07:00"},
@@ -6,7 +6,7 @@
     "event_id": "evt_case03",
     "event_time": "2026-03-22T10:00:00-07:00",
     "patient": {"patient_id": "p_300", "first_name": "Michael", "last_name": "Torres", "dob": "1990-11-22"},
-    "prescriber": {"npi": "3334445556", "display_name": "Dr. Alice Nguyen", "dosespot_user_id": "u_903"},
+    "prescriber": {"npi": "3334445556", "display_name": "Dr. Jane Smith", "dosespot_user_id": "u_903"},
     "prescription": {"drug_display": "Semaglutide 1mg/dose (Ozempic)", "ingredient": "semaglutide", "strength": "1 mg", "route": "subcutaneous", "sig": "Inject 1 mg once weekly", "days_supply": 84},
     "pharmacy": {"name": "Costco Pharmacy, Austin TX", "ncpdp_id": "888111"},
     "program": "Weight Management",

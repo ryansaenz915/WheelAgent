@@ -1,4 +1,4 @@
-﻿{
+{
   "review_id": "case_06",
   "review_type": "polypharmacy_interaction",
   "queue": {"patient_name": "Olivia Chen", "primary_drug_or_issue": "QT-risk polypharmacy review", "severity": "review_required", "program": "Urgent Care", "status": "open", "updated_at": "2026-03-20T11:20:00-07:00"},
@@ -6,7 +6,7 @@
     "event_id": "evt_case06",
     "event_time": "2026-03-20T11:20:00-07:00",
     "patient": {"patient_id": "p_600", "first_name": "Olivia", "last_name": "Chen", "dob": "1993-05-14"},
-    "prescriber": {"npi": "6667778889", "display_name": "Dr. Marcus Reed", "dosespot_user_id": "u_906"},
+    "prescriber": {"npi": "6667778889", "display_name": "Dr. Jane Smith", "dosespot_user_id": "u_906"},
     "prescription": {"drug_display": "Azithromycin 250mg tablet pack", "ingredient": "azithromycin", "strength": "250 mg", "route": "oral", "sig": "Take 2 tablets day 1, then 1 tablet daily days 2-5", "days_supply": 5},
     "pharmacy": {"name": "Walgreens, Phoenix AZ", "ncpdp_id": "111222"},
     "program": "Urgent Care",
